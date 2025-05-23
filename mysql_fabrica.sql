@@ -117,11 +117,15 @@ UPDATE vendedor SET comision = 0.052 WHERE id_vend = 1;
 UPDATE ventas SET total = 160.00 WHERE id_venta = 1;
 UPDATE detalle_venta SET cantidad = 10, precio_unitario = 16.00 WHERE id_detalle = 1;
 
+SET FOREIGN_KEY_CHECKS=0;
+
 DELETE FROM detalle_venta WHERE id_detalle = 5;
 DELETE FROM ventas WHERE id_venta = 5;
 DELETE FROM productos WHERE id_prod = 5;
 DELETE FROM clientes WHERE id_cli = 5;
 DELETE FROM vendedor WHERE id_vend = 5;
 DELETE FROM proveedores WHERE id_prov = 5;
+
+SET FOREIGN_KEY_CHECKS=1;
 
 COMMIT;
