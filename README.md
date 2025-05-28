@@ -479,3 +479,478 @@ DELETE FROM products WHERE id = 5;
 DELETE FROM clients WHERE id = 5;
 DELETE FROM suppliers WHERE id = 5;
 ```
+
+## mysql_zapateria.sql
+
+```sql
+
+
+-- 1. Inserción de Datos: Insertar cinco registros de ejemplo en cada una de las tablas.
+
+INSERT INTO `proveedores` (`nombre_proveedor`, `direccion`, `telefono`, `email`) VALUES
+('Calzados El Sol', 'Calle Sol 123, Ciudad Grande', '555-1001', 'ventas@elsol.com'),
+('Botas Fuertes Inc.', 'Avenida Roble 45, Villa Montaña', '555-1002', 'contacto@botasfuertes.com'),
+('Sandalias Playeras Ltd.', 'Paseo Marítimo 7, Costa Bella', '555-1003', 'info@sandaliasplayeras.com'),
+('Zapatillas Rápidas Co.', 'Carrera Veloz 99, Metrópolis', '555-1004', 'pedidos@zapatillasrapidas.com'),
+('Elegancia Formal S.A.', 'Boulevard Glamour 21, Capital', '555-1005', 'soporte@eleganciaformal.com');
+
+INSERT INTO `clientes` (`nombre_cliente`, `apellido_cliente`, `direccion`, `Telefono`, `email`) VALUES
+('Ana', 'Pérez', 'Calle Luna 10, Barrio Centro', '555-0201', 'ana.perez@email.com'),
+('Luis', 'Gómez', 'Avenida Estrella 25, Colonia Norte', '555-0202', 'luis.gomez@email.com'),
+('Sofía', 'Martínez', 'Pasaje Flores 3, Residencial Sur', '555-0203', 'sofia.martinez@email.com'),
+('Carlos', 'Rodríguez', 'Camino Viejo 88, Zona Oeste', '555-0204', 'carlos.rodriguez@email.com'),
+('Laura', 'Fernández', 'Plaza Principal 1, Pueblo Nuevo', '555-0205', 'laura.fernandez@email.com');
+
+INSERT INTO `vendedor` (`nombre_vendedor`, `apellido_vendedor`, `email`, `Telefono`) VALUES
+('Juan', 'López', 'juan.lopez@zapateria.com', '555-0301'),
+('María', 'García', 'maria.garcia@zapateria.com', '555-0302'),
+('Pedro', 'Sánchez', 'pedro.sanchez@zapateria.com', '555-0303'),
+('Lucía', 'Díaz', 'lucia.diaz@zapateria.com', '555-0304'),
+('Miguel', 'Hernández', 'miguel.hernandez@zapateria.com', '555-0305');
+
+INSERT INTO `productos_deposito` (`nombre_producto`, `descripcion`, `precio_costo`, `precio_venta`, `stock`, `id_proveedor`) VALUES
+('Zapato Casual Hombre', 'Zapato de cuero marrón, talla 42', 25.50, 49.99, 50, 1),
+('Bota de Montaña Mujer', 'Bota impermeable, color gris, talla 38', 40.00, 79.90, 30, 2),
+('Sandalia Playa Unisex', 'Sandalia de goma, varios colores, talla M', 8.00, 15.00, 100, 3),
+('Zapatilla Deportiva Niño', 'Zapatilla para correr, azul y verde, talla 30', 18.75, 35.50, 75, 4),
+('Zapato de Vestir Hombre', 'Zapato de charol negro, elegante, talla 43', 55.00, 99.99, 20, 5);
+
+INSERT INTO `ventas` (`id_cliente`, `id_vendedor`, `fecha_venta`, `total_venta`, `detalles_venta`) VALUES
+(1, 1, '2024-05-10 10:30:00', 49.99, '1x Zapato Casual Hombre (ID:1)'),
+(2, 2, '2024-05-11 15:00:00', 79.90, '1x Bota de Montaña Mujer (ID:2)'),
+(3, 3, '2024-05-12 12:15:00', 15.00, '1x Sandalia Playa Unisex (ID:3)'),
+(4, 4, '2024-05-13 17:45:00', 35.50, '1x Zapatilla Deportiva Niño (ID:4)'),
+(5, 5, '2024-05-14 09:00:00', 99.99, '1x Zapato de Vestir Hombre (ID:5)');
+
+
+-- 2. Consulta de Datos: Consultar la primera fila de cada tabla, primero mostrando todas sus columnas y luego columnas específicas.
+SELECT * FROM `proveedores` LIMIT 1;
+SELECT `id_proveedor`, `nombre_proveedor`, `email` FROM `proveedores` LIMIT 1;
+
+SELECT * FROM `clientes` LIMIT 1;
+SELECT `id_cliente`, `nombre_cliente`, `apellido_cliente`, `email` FROM `clientes` LIMIT 1;
+
+SELECT * FROM `vendedor` LIMIT 1;
+SELECT `id_Vendedor`, `nombre_vendedor`, `apellido_vendedor`, `email` FROM `vendedor` LIMIT 1;
+
+SELECT * FROM `productos_deposito` LIMIT 1;
+SELECT `id_producto`, `nombre_producto`, `precio_venta`, `stock` FROM `productos_deposito` LIMIT 1;
+
+SELECT * FROM `ventas` LIMIT 1;
+SELECT `id_venta`, `id_cliente`, `id_vendedor`, `fecha_venta`, `total_venta` FROM `ventas` LIMIT 1;
+
+
+-- 3. Modificación de Datos: Actualizar un campo específico en un registro (generalmente el primero) de cada una de las tablas.
+UPDATE `proveedores` SET `telefono` = '555-1099' WHERE `id_proveedor` = 1;
+UPDATE `clientes` SET `direccion` = 'Calle Luna 10, Barrio Centro (Actualizado)' WHERE `id_cliente` = 1;
+UPDATE `vendedor` SET `Telefono` = '555-0399' WHERE `id_Vendedor` = 1;
+UPDATE `productos_deposito` SET `stock` = 45 WHERE `id_producto` = 1;
+UPDATE `ventas` SET `total_venta` = 50.00 WHERE `id_venta` = 1;
+
+
+-- 4. Eliminación de Datos: Eliminar al menos un registro de cada una de las tablas.
+SET FOREIGN_KEY_CHECKS=0; -- Desactivar temporalmente para facilitar borrados si hay dependencias no deseadas
+
+DELETE FROM `ventas` WHERE `id_venta` = (SELECT `id_venta` FROM (SELECT `id_venta` FROM `ventas` ORDER BY `id_venta` DESC LIMIT 1) as v);
+DELETE FROM `productos_deposito` WHERE `id_producto` = (SELECT `id_producto` FROM (SELECT `id_producto` FROM `productos_deposito` ORDER BY `id_producto` DESC LIMIT 1) as pd);
+DELETE FROM `vendedor` WHERE `id_Vendedor` = (SELECT `id_Vendedor` FROM (SELECT `id_Vendedor` FROM `vendedor` ORDER BY `id_Vendedor` DESC LIMIT 1) as vd);
+DELETE FROM `clientes` WHERE `id_cliente` = (SELECT `id_cliente` FROM (SELECT `id_cliente` FROM `clientes` ORDER BY `id_cliente` DESC LIMIT 1) as cl);
+DELETE FROM `proveedores` WHERE `id_proveedor` = (SELECT `id_proveedor` FROM (SELECT `id_proveedor` FROM `proveedores` ORDER BY `id_proveedor` DESC LIMIT 1) as pr);
+
+SET FOREIGN_KEY_CHECKS=1; -- Reactivar chequeo de claves foráneas
+
+
+```
+
+## mysql_poblacion.sql
+
+```sql
+
+
+-- 1. Inserción de Datos: Insertar cinco registros de ejemplo en cada una de las tablas.
+INSERT INTO `paises` (`nombre_pais`, `codigo_iso`) VALUES
+('México', 'MEX'),
+('Estados Unidos', 'USA'),
+('Canadá', 'CAN'),
+('Brasil', 'BRA'),
+('Argentina', 'ARG');
+
+INSERT INTO `estados` (`nombre_estado`, `id_pais_fk`) VALUES
+('Jalisco', 1),
+('California', 2),
+('Ontario', 3),
+('São Paulo', 4),
+('Buenos Aires', 5);
+
+INSERT INTO `municipios` (`nombre_municipio`, `id_estado_fk`) VALUES
+('Guadalajara', 1),
+('Los Angeles', 2),
+('Toronto', 3),
+('São Paulo', 4), -- Municipio de São Paulo
+('La Plata', 5);
+
+INSERT INTO `densidad_poblacion` (`id_municipio_fk`, `anio`, `poblacion`, `densidad_km2`) VALUES
+(1, 2023, 1460148, 9288.00),
+(2, 2023, 3849000, 3200.50),
+(3, 2023, 2794000, 4334.40),
+(4, 2023, 12330000, 7946.90),
+(5, 2023, 654324, 718.20);
+
+INSERT INTO `dirigentes` (`nombre_completo`, `cargo`, `id_pais_fk`, `id_estado_fk`, `id_municipio_fk`) VALUES
+('Andrés Manuel López Obrador', 'Presidente', 1, NULL, NULL),
+('Joe Biden', 'Presidente', 2, NULL, NULL),
+('Enrique Alfaro Ramírez', 'Gobernador', 1, 1, NULL),
+('Gavin Newsom', 'Gobernador', 2, 2, NULL),
+('Pablo Lemus Navarro', 'Alcalde', 1, 1, 1);
+
+
+-- 2. Consulta de Datos: Consultar la primera fila de cada tabla, primero mostrando todas sus columnas y luego columnas específicas.
+SELECT * FROM `paises` LIMIT 1;
+SELECT `id_pais`, `nombre_pais`, `codigo_iso` FROM `paises` LIMIT 1;
+
+SELECT * FROM `estados` LIMIT 1;
+SELECT `id_estado`, `nombre_estado`, `id_pais_fk` FROM `estados` LIMIT 1;
+
+SELECT * FROM `municipios` LIMIT 1;
+SELECT `id_Municipio`, `nombre_municipio`, `id_estado_fk` FROM `municipios` LIMIT 1;
+
+SELECT * FROM `densidad_poblacion` LIMIT 1;
+SELECT `id_densidad`, `id_municipio_fk`, `anio`, `poblacion` FROM `densidad_poblacion` LIMIT 1;
+
+SELECT * FROM `dirigentes` LIMIT 1;
+SELECT `id_dirigente`, `nombre_completo`, `cargo`, `id_pais_fk` FROM `dirigentes` LIMIT 1;
+
+
+-- 3. Modificación de Datos: Actualizar un campo específico en un registro (generalmente el primero) de cada una de las tablas.
+UPDATE `paises` SET `codigo_iso` = 'MX' WHERE `id_pais` = 1;
+UPDATE `estados` SET `nombre_estado` = 'Jalisco MX' WHERE `id_estado` = 1;
+UPDATE `municipios` SET `nombre_municipio` = 'Guadalajara Centro' WHERE `id_Municipio` = 1;
+UPDATE `densidad_poblacion` SET `poblacion` = 1500000 WHERE `id_densidad` = 1;
+UPDATE `dirigentes` SET `nombre_completo` = 'Andrés M. López Obrador' WHERE `id_dirigente` = 1;
+
+
+-- 4. Eliminación de Datos: Eliminar al menos un registro de cada una de las tablas.
+DELETE FROM `densidad_poblacion` WHERE `id_municipio_fk` = 5 LIMIT 1;
+DELETE FROM `dirigentes` WHERE `id_pais_fk` = 5 AND `cargo` = 'Presidente' LIMIT 1;
+DELETE FROM `municipios` WHERE `id_Municipio` = 5;
+DELETE FROM `estados` WHERE `id_estado` = 5;
+DELETE FROM `paises` WHERE `id_pais` = 5;
+DELETE FROM `densidad_poblacion` WHERE `id_densidad` = (SELECT `id_densidad` FROM (SELECT `id_densidad` FROM `densidad_poblacion` ORDER BY `id_densidad` DESC LIMIT 1) as dp);
+DELETE FROM `dirigentes` WHERE `id_dirigente` = (SELECT `id_dirigente` FROM (SELECT `id_dirigente` FROM `dirigentes` ORDER BY `id_dirigente` DESC LIMIT 1) as dr);
+DELETE FROM `municipios` WHERE `id_Municipio` = (SELECT `id_Municipio` FROM (SELECT `id_Municipio` FROM `municipios` ORDER BY `id_Municipio` DESC LIMIT 1) as mn);
+DELETE FROM `estados` WHERE `id_estado` = (SELECT `id_estado` FROM (SELECT `id_estado` FROM `estados` ORDER BY `id_estado` DESC LIMIT 1) as es);
+DELETE FROM `paises` WHERE `id_pais` = (SELECT `id_pais` FROM (SELECT `id_pais` FROM `paises` ORDER BY `id_pais` DESC LIMIT 1) as pa);
+
+
+```
+
+## psql_biblioteca.sql
+
+```sql
+
+-- 1. Inserción de Datos: Insertar cinco registros de ejemplo en cada una de las tablas.
+
+-- Aisles
+INSERT INTO Aisles (aisle_number, number_of_shelves, rows_per_shelf, location_description) VALUES
+('A1', 5, 3, 'Fiction Section, 1st Floor East'),
+('B2', 6, 4, 'Non-Fiction, 1st Floor West'),
+('C3', 4, 3, 'Science & Technology, 2nd Floor North'),
+('D4', 5, 2, 'History & Biographies, 2nd Floor South'),
+('E5', 3, 5, 'Childrens Books, Ground Floor');
+
+-- Books
+INSERT INTO Books (title, author, publication_year, isbn, call_number, publisher, edition, language, number_of_pages, summary) VALUES
+('The Great Gatsby', 'F. Scott Fitzgerald', 1925, '978-0743273565', 'FIC FIT 1925', 'Charles Scribners Sons', '1st', 'English', 180, 'A story of wealth, love, and the American Dream in the Jazz Age.'),
+('To Kill a Mockingbird', 'Harper Lee', 1960, '978-0061120084', 'FIC LEE 1960', 'J.B. Lippincott & Co.', '1st', 'English', 281, 'A novel about innocence, justice, and racial prejudice in the American South.'),
+('1984', 'George Orwell', 1949, '978-0451524935', 'FIC ORW 1949', 'Secker & Warburg', '1st', 'English', 328, 'A dystopian novel set in a totalitarian society.'),
+('Cosmos', 'Carl Sagan', 1980, '978-0345539434', 'SCI SAG 1980', 'Random House', '1st', 'English', 384, 'An exploration of the universe and our place within it.'),
+('A Brief History of Time', 'Stephen Hawking', 1988, '978-0553380163', 'SCI HAW 1988', 'Bantam Books', '1st', 'English', 256, 'A landmark volume in science writing by one of the great minds of our time.');
+
+-- Library_Users
+INSERT INTO Library_Users (first_name, last_name, email, phone_number, address, membership_id, status) VALUES
+('Alice', 'Wonder', 'alice.wonder@example.com', '555-0101', '123 Wonderland Ave', 'MEM001', 'Active'),
+('Bob', 'Builder', 'bob.builder@example.com', '555-0102', '456 Construction Rd', 'MEM002', 'Active'),
+('Charlie', 'Chocolate', 'charlie.chocolate@example.com', '555-0103', '789 Factory Ln', 'MEM003', 'Suspended'),
+('Diana', 'Prince', 'diana.prince@example.com', '555-0104', '101 Themyscira Way', 'MEM004', 'Active'),
+('Edward', 'Elric', 'edward.elric@example.com', '555-0105', '202 Alchemy St', 'MEM005', 'Inactive');
+
+-- Categories
+INSERT INTO Categories (category_name, description) VALUES
+('Fiction', 'Narrative literary works whose content is produced by the imagination.'),
+('Non-Fiction', 'Informational books based on facts, real events, and real people.'),
+('Science', 'Books related to scientific disciplines like physics, astronomy, biology.'),
+('History', 'Books detailing past events, societies, and civilizations.'),
+('Childrens', 'Books written for children.');
+
+-- Inventory (linking to first 5 books and first 5 aisles for simplicity)
+INSERT INTO Inventory (book_id, aisle_id, shelf_number, row_number, copy_number, acquisition_date, condition, status) VALUES
+(1, 1, 2, 1, 1, '2020-01-15', 'Good', 'Available'),
+(2, 1, 3, 2, 1, '2020-02-20', 'New', 'Available'),
+(3, 2, 1, 1, 1, '2021-03-10', 'Fair', 'Available'),
+(4, 3, 4, 1, 1, '2021-05-05', 'Good', 'Available'),
+(5, 3, 2, 3, 1, '2022-06-25', 'Good', 'Available');
+
+-- Update inventory status for items that will be loaned out
+UPDATE Inventory SET status = 'On Loan' WHERE id IN (1, 2, 3, 4, 5); -- Simulate all 5 are loaned out for initial loan data
+
+-- Loans
+INSERT INTO Loans (inventory_id, user_id, loan_date, due_date, status) VALUES
+(1, 1, CURRENT_DATE - INTERVAL '10 days', CURRENT_DATE + INTERVAL '4 days', 'Active'),
+(2, 2, CURRENT_DATE - INTERVAL '20 days', CURRENT_DATE - INTERVAL '6 days', 'Returned'),
+(3, 3, CURRENT_DATE - INTERVAL '5 days', CURRENT_DATE + INTERVAL '9 days', 'Active'),
+(4, 4, CURRENT_DATE - INTERVAL '30 days', CURRENT_DATE - INTERVAL '2 days', 'Overdue'),
+(5, 5, CURRENT_DATE - INTERVAL '2 days', CURRENT_DATE + INTERVAL '12 days', 'Active');
+-- Manually update return_date for the returned loan
+UPDATE Loans SET return_date = CURRENT_DATE - INTERVAL '5 days' WHERE id = 2;
+
+-- Book_Categories
+INSERT INTO Book_Categories (book_id, category_id) VALUES
+(1, 1), -- The Great Gatsby -> Fiction
+(2, 1), -- To Kill a Mockingbird -> Fiction
+(3, 1), -- 1984 -> Fiction
+(4, 3), -- Cosmos -> Science
+(5, 3); -- A Brief History of Time -> Science
+
+-- Aisle_Categories
+INSERT INTO Aisle_Categories (aisle_id, category_id) VALUES
+(1, 1), -- A1 -> Fiction
+(2, 2), -- B2 -> Non-Fiction
+(3, 3), -- C3 -> Science
+(4, 4), -- D4 -> History
+(5, 5); -- E5 -> Childrens
+
+
+-- 2. Consulta de Datos: Consultar la primera fila de cada tabla, primero mostrando todas sus columnas y luego columnas específicas.
+SELECT * FROM Aisles FETCH FIRST 1 ROW ONLY;
+SELECT id, aisle_number, location_description FROM Aisles FETCH FIRST 1 ROW ONLY;
+
+SELECT * FROM Books FETCH FIRST 1 ROW ONLY;
+SELECT id, title, author, call_number FROM Books FETCH FIRST 1 ROW ONLY;
+
+SELECT * FROM Library_Users FETCH FIRST 1 ROW ONLY;
+SELECT id, first_name, last_name, email, membership_id FROM Library_Users FETCH FIRST 1 ROW ONLY;
+
+SELECT * FROM Categories FETCH FIRST 1 ROW ONLY;
+SELECT id, category_name FROM Categories FETCH FIRST 1 ROW ONLY;
+
+SELECT * FROM Inventory FETCH FIRST 1 ROW ONLY;
+SELECT id, book_id, aisle_id, status, condition FROM Inventory FETCH FIRST 1 ROW ONLY;
+
+SELECT * FROM Loans FETCH FIRST 1 ROW ONLY;
+SELECT id, inventory_id, user_id, loan_date, due_date, status FROM Loans FETCH FIRST 1 ROW ONLY;
+
+SELECT * FROM Book_Categories FETCH FIRST 1 ROW ONLY;
+SELECT book_id, category_id FROM Book_Categories FETCH FIRST 1 ROW ONLY;
+
+SELECT * FROM Aisle_Categories FETCH FIRST 1 ROW ONLY;
+SELECT aisle_id, category_id FROM Aisle_Categories FETCH FIRST 1 ROW ONLY;
+
+
+-- 3. Modificación de Datos: Actualizar un campo específico en un registro (generalmente el primero) de cada una de las tablas.
+UPDATE Aisles SET location_description = 'Fiction Section, 1st Floor East Wing' WHERE id = 1;
+UPDATE Books SET publication_year = 1926 WHERE id = 1;
+UPDATE Library_Users SET phone_number = '555-0199' WHERE id = 1;
+UPDATE Categories SET description = 'Narrative literary works whose content is produced by the imagination and story-telling.' WHERE id = 1;
+UPDATE Inventory SET condition = 'Very Good', notes = 'Slight wear on cover' WHERE id = 1;
+UPDATE Loans SET fine_amount = 5.00, notes = 'User notified of overdue status.' WHERE status = 'Overdue' AND id = 4; -- Target specific loan
+UPDATE Book_Categories SET category_id = (SELECT id FROM Categories WHERE category_name = 'Non-Fiction' LIMIT 1) WHERE book_id = 1 AND category_id = (SELECT id FROM Categories WHERE category_name = 'Fiction' LIMIT 1); -- Change Gatsby's category
+UPDATE Aisle_Categories SET category_id = (SELECT id FROM Categories WHERE category_name = 'Non-Fiction' LIMIT 1) WHERE aisle_id = 1 AND category_id = (SELECT id FROM Categories WHERE category_name = 'Fiction' LIMIT 1); -- Change Aisle 1's category
+
+
+-- 4. Eliminación de Datos: Eliminar al menos un registro de cada una de las tablas.
+
+
+DELETE FROM Loans WHERE id = 5;
+DELETE FROM Book_Categories WHERE book_id = 5 AND category_id = (SELECT id FROM Categories WHERE category_name = 'Science');
+DELETE FROM Aisle_Categories WHERE aisle_id = 5 AND category_id = (SELECT id FROM Categories WHERE category_name = 'Childrens');
+DELETE FROM Inventory WHERE id = 5;
+DELETE FROM Library_Users WHERE id = 5;
+DELETE FROM Books WHERE id = 5;
+DELETE FROM Categories WHERE id = 5;
+DELETE FROM Aisles WHERE id = 5;
+
+```
+
+## psql_aerolinea.sql
+
+```sql
+-- 1. Inserción de Datos: Insertar registros de ejemplo en cada una de las tablas.
+
+-- Planes
+INSERT INTO planes (model) VALUES
+('Boeing 737'), ('Airbus A320'), ('Boeing 777'), ('Airbus A350'), ('Embraer E190');
+
+-- Passengers
+INSERT INTO passengers (dni, name, last_name, email, dob, phone) VALUES
+('11111111A', 'Alice', 'Smith', 'alice.smith@example.com', '1990-05-15', '555-0101'),
+('22222222B', 'Bob', 'Johnson', 'bob.johnson@example.com', '1985-08-20', '555-0102'),
+('33333333C', 'Charlie', 'Brown', 'charlie.brown@example.com', '1992-11-30', '555-0103'),
+('44444444D', 'Diana', 'Prince', 'diana.prince@example.com', '1988-02-10', '555-0104'),
+('55555555E', 'Edward', 'Davis', 'edward.davis@example.com', '1975-07-25', '555-0105');
+
+-- Personel (IDs 1-12)
+INSERT INTO personel (name, last_name, dni, rol, plane_id, flight_hours, years_of_service) VALUES
+('John', 'Doe', 'P001', 'pilot', 1, 5000, 10),        -- ID 1 (Captain for Plane 1 details)
+('Jane', 'Roe', 'C001', 'copilot', 1, 3000, 5),       -- ID 2 (Copilot for Plane 1 details)
+('Peter', 'Pan', 'S001', 'stewardess', 1, 2000, 3),   -- ID 3 (Stewardess for Plane 1 details)
+('Wendy', 'Darling', 'S002', 'stewardess', 1, 1500, 2),-- ID 4 (Stewardess for Plane 1 details)
+('Michael', 'Jordan', 'P002', 'pilot', 2, 6000, 12),  -- ID 5 (Captain for Plane 2 details)
+('Scottie', 'Pippen', 'C002', 'copilot', 2, 3500, 6),  -- ID 6 (Copilot for Plane 2 details)
+('Lisa', 'Simpson', 'S003', 'stewardess', 2, 2200, 4), -- ID 7 (Stewardess for Plane 2 details)
+('Bart', 'Simpson', 'S004', 'steward', 2, 1800, 3),   -- ID 8 (Steward for Plane 2 details)
+('Clark', 'Kent', 'P003', 'pilot', 5, 7000, 15),      -- ID 9 (Captain for Plane 5 details, to be deleted)
+('Lois', 'Lane', 'C003', 'copilot', 5, 4000, 7),      -- ID 10 (Copilot for Plane 5 details)
+('Bruce', 'Wayne', 'S005', 'steward', 3, 2500, 5),    -- ID 11
+('Selina', 'Kyle', 'S006', 'stewardess', 4, 1000, 1); -- ID 12
+
+-- Flights
+INSERT INTO flights (city_of_arrival, city_of_departure, arrival_datetime, departure_datetime, plane_id) VALUES
+('New York', 'London', '2024-08-01 18:00:00+00', '2024-08-01 10:00:00+00', 1),
+('Paris', 'Rome', '2024-08-02 15:00:00+00', '2024-08-02 12:00:00+00', 2),
+('Tokyo', 'Los Angeles', '2024-08-03 22:00:00+00', '2024-08-03 08:00:00+00', 3),
+('Dubai', 'Singapore', '2024-08-04 10:00:00+00', '2024-08-04 02:00:00+00', 4),
+('Berlin', 'Madrid', '2024-08-05 14:00:00+00', '2024-08-05 11:00:00+00', 5);
+
+-- Plane Details
+INSERT INTO plane_details (plane_id, captain_id, copilot_id, stewardess_one_id, stewardess_two_id, vip_capacity, commercial_capacity, fuel_capacity_liters, extinguishers, last_maintenance_date, replenish_status, fuel_level_status, maintenance_status) VALUES
+(1, 1, 2, 3, 4, 10, 150, 20000, 5, '2024-07-01', 'replenished', 'refueled', 'performed'),
+(2, 5, 6, 7, 8, 12, 160, 22000, 6, '2024-07-05', 'pending', 'pending', 'pending'),
+(3, NULL, NULL, 11, NULL, 20, 250, 35000, 8, '2024-06-20', 'replenished', 'refueled', 'performed'),
+(4, NULL, NULL, 12, NULL, 15, 200, 30000, 7, '2024-06-15', 'pending', 'pending', 'pending'),
+(5, 9, 10, NULL, NULL, 8, 120, 15000, 4, '2024-07-10', 'empty', 'pending', 'pending');
+
+-- Tickets
+INSERT INTO tickets (passenger_id, flight_id, amount, confirmed, seat_number, luggage_kg) VALUES
+(1, 1, 550.00, true, '12A', 23.0),
+(2, 2, 300.00, true, '5B', 15.5),
+(3, 3, 800.00, false, '21F', 20.0),
+(4, 4, 750.00, true, '3C', 0.0),
+(5, 5, 200.00, true, '10D', 10.0);
+
+-- 2. Consulta de Datos: Consultar la primera fila de cada tabla, primero mostrando todas sus columnas y luego columnas específicas.
+SELECT * FROM planes FETCH FIRST 1 ROW ONLY;
+SELECT id, model FROM planes FETCH FIRST 1 ROW ONLY;
+
+SELECT * FROM passengers FETCH FIRST 1 ROW ONLY;
+SELECT id, dni, name, last_name, email FROM passengers FETCH FIRST 1 ROW ONLY;
+
+SELECT * FROM personel FETCH FIRST 1 ROW ONLY;
+SELECT id, name, last_name, rol, plane_id FROM personel FETCH FIRST 1 ROW ONLY;
+
+SELECT * FROM flights FETCH FIRST 1 ROW ONLY;
+SELECT id, city_of_departure, city_of_arrival, departure_datetime, plane_id FROM flights FETCH FIRST 1 ROW ONLY;
+
+SELECT * FROM plane_details FETCH FIRST 1 ROW ONLY;
+SELECT id, plane_id, captain_id, vip_capacity, commercial_capacity, maintenance_status FROM plane_details FETCH FIRST 1 ROW ONLY;
+
+SELECT * FROM tickets FETCH FIRST 1 ROW ONLY;
+SELECT id, passenger_id, flight_id, seat_number, amount, confirmed FROM tickets FETCH FIRST 1 ROW ONLY;
+
+
+-- 3. Modificación de Datos: Actualizar un campo específico en un registro (generalmente el primero) de cada una de las tablas.
+UPDATE planes SET model = 'Boeing 737 MAX' WHERE id = 1;
+UPDATE passengers SET phone = '555-111-2222' WHERE id = 1;
+UPDATE personel SET flight_hours = 5100 WHERE id = 1;
+UPDATE flights SET arrival_datetime = '2024-08-01 18:30:00+00' WHERE id = 1;
+UPDATE plane_details SET maintenance_status = 'pending', last_maintenance_date = '2024-07-15' WHERE plane_id = 1;
+UPDATE tickets SET confirmed = true, amount = 560.00 WHERE id = 3;
+
+
+-- 4. Eliminación de Datos: Eliminar al menos un registro de cada una de las tablas.
+DELETE FROM tickets WHERE id = 5;
+
+DELETE FROM plane_details WHERE plane_id = 5;
+
+DELETE FROM flights WHERE id = 5;
+
+DELETE FROM personel WHERE id = 9;
+
+DELETE FROM passengers WHERE id = 5;
+
+DELETE FROM planes WHERE id = 5;
+```
+
+## psql_fabricaMaquinaria.sql
+
+```sql
+-- 1. Inserción de Datos: Insertar cinco registros de ejemplo en cada una de las tablas.
+
+-- Departments
+INSERT INTO Departments (department_name, description, location, cost_center_code) VALUES
+('Manufacturing', 'Handles all production processes', 'Building A, Floor 1', 'MFG100'),
+('Engineering', 'Designs and improves products and machinery', 'Building B, Floor 2', 'ENG200'),
+('Human Resources', 'Manages employee relations and recruitment', 'Building C, Floor 1', 'HR300'),
+('Sales & Marketing', 'Promotes and sells company products', 'Building C, Floor 2', 'SM400'),
+('Logistics', 'Manages warehousing and shipment of goods', 'Warehouse Complex 1', 'LOG500');
+
+-- Positions
+INSERT INTO Positions (position_title, responsibilities_description, hierarchical_level, minimum_salary, maximum_salary) VALUES
+('Machine Operator', 'Operates and maintains production machinery.', 1, 30000.00, 45000.00),
+('Mechanical Engineer', 'Designs mechanical systems and components.', 3, 60000.00, 90000.00),
+('HR Specialist', 'Handles recruitment, onboarding, and employee benefits.', 2, 45000.00, 65000.00),
+('Sales Representative', 'Develops client relationships and achieves sales targets.', 2, 40000.00, 75000.00),
+('Logistics Coordinator', 'Manages inventory and coordinates shipments.', 2, 42000.00, 60000.00);
+
+-- Employees
+INSERT INTO Employees (first_name, last_name, national_id_number, date_of_birth, gender, address, phone_number, corporate_email, hire_date, department_id, position_id, supervisor_id, employee_status) VALUES
+('John', 'Doe', 'NID12345601', '1985-03-15', 'M', '123 Production Way', '555-1001', 'john.doe@fabric.com', '2015-06-01', 1, 1, NULL, 'Active'),
+('Jane', 'Smith', 'NID12345602', '1990-07-22', 'F', '456 Engineer Blvd', '555-1002', 'jane.smith@fabric.com', '2018-01-10', 2, 2, NULL, 'Active'),
+('Robert', 'Brown', 'NID12345603', '1988-11-05', 'M', '789 HR Lane', '555-1003', 'robert.brown@fabric.com', '2019-03-15', 3, 3, 2, 'Active'),
+('Emily', 'White', 'NID12345604', '1992-01-30', 'F', '101 Sales St', '555-1004', 'emily.white@fabric.com', '2020-07-01', 4, 4, 2, 'Active'),
+('Michael', 'Green', 'NID12345605', '1983-09-12', 'M', '202 Logistics Dr', '555-1005', 'michael.green@fabric.com', '2016-11-20', 5, 5, 2, 'Active');
+
+-- Salaries
+INSERT INTO Salaries (employee_id, salary_amount, effective_start_date, currency_code, payment_frequency, notes) VALUES
+(1, 40000.00, '2015-06-01', 'USD', 'Monthly', 'Initial salary for John Doe'),
+(2, 75000.00, '2018-01-10', 'USD', 'Monthly', 'Initial salary for Jane Smith'),
+(3, 55000.00, '2019-03-15', 'USD', 'Monthly', 'Initial salary for Robert Brown'),
+(4, 60000.00, '2020-07-01', 'USD', 'Monthly', 'Initial salary for Emily White'),
+(5, 50000.00, '2016-11-20', 'USD', 'Monthly', 'Initial salary for Michael Green');
+
+-- Department_Machinery
+INSERT INTO Department_Machinery (machine_name, inventory_code, department_id, usage_description, brand, model, serial_number, acquisition_date, acquisition_cost, machine_status, last_maintenance_date) VALUES
+('CNC Milling Machine Alpha', 'CNCMA001', 1, 'Precision part manufacturing', 'Haas', 'VF-2', 'SNCNCMA001', '2017-05-20', 120000.00, 'Operational', '2023-12-15'),
+('Laser Cutter Beta', 'LSCB002', 1, 'Sheet metal cutting', 'Trumpf', 'TruLaser 3030', 'SNLSCB002', '2019-08-10', 250000.00, 'Operational', '2024-01-20'),
+('3D Printer DesignPro', '3DPDP003', 2, 'Prototyping and R&D', 'Stratasys', 'F170', 'SN3DPDP003', '2020-02-01', 35000.00, 'Operational', '2023-11-05'),
+('Packaging Machine Gamma', 'PKGGM004', 5, 'Automated product packaging', 'Bosch', 'Pack 202', 'SNPKGGM004', '2018-06-15', 85000.00, 'Operational', '2024-02-10'),
+('Heavy-Duty Forklift', 'FORKL005', 5, 'Warehouse material handling', 'Toyota', '8FGCU25', 'SNFORKL005', '2021-03-01', 45000.00, 'Under Maintenance', '2024-03-01');
+
+-- 2. Consulta de Datos: Consultar la primera fila de cada tabla, primero mostrando todas sus columnas y luego columnas específicas.
+
+-- Departments
+SELECT * FROM Departments FETCH FIRST 1 ROW ONLY;
+SELECT id, department_name, location FROM Departments FETCH FIRST 1 ROW ONLY;
+
+-- Positions
+SELECT * FROM Positions FETCH FIRST 1 ROW ONLY;
+SELECT id, position_title, minimum_salary, maximum_salary FROM Positions FETCH FIRST 1 ROW ONLY;
+
+-- Employees
+SELECT * FROM Employees FETCH FIRST 1 ROW ONLY;
+SELECT id, first_name, last_name, corporate_email, department_id FROM Employees FETCH FIRST 1 ROW ONLY;
+
+-- Salaries
+SELECT * FROM Salaries FETCH FIRST 1 ROW ONLY;
+SELECT id, employee_id, salary_amount, effective_start_date FROM Salaries FETCH FIRST 1 ROW ONLY;
+
+-- Department_Machinery
+SELECT * FROM Department_Machinery FETCH FIRST 1 ROW ONLY;
+SELECT id, machine_name, inventory_code, department_id, machine_status FROM Department_Machinery FETCH FIRST 1 ROW ONLY;
+
+
+-- 3. Modificación de Datos: Actualizar un campo específico en un registro (el primero) de cada una de las tablas.
+
+UPDATE Departments SET location = 'Building A, Floor 1 - Main Office' WHERE id = 1;
+UPDATE Positions SET minimum_salary = 32000.00, maximum_salary = 48000.00 WHERE id = 1;
+UPDATE Employees SET phone_number = '555-999-0001' WHERE id = 1;
+UPDATE Salaries SET salary_amount = 42000.00, notes = 'Salary adjustment for John Doe, effective 2024-04-01' WHERE id = 1;
+UPDATE Department_Machinery SET machine_status = 'Operational', last_maintenance_date = '2024-03-10', notes = 'Returned to service after minor checkup.' WHERE id = 1;
+
+
+-- 4. Eliminación de Datos: Eliminar al menos un registro de cada una de las tablas.
+DELETE FROM Salaries WHERE id = 5;
+DELETE FROM Employees WHERE id = 5;
+DELETE FROM Positions WHERE id = 5;
+DELETE FROM Department_Machinery WHERE department_id = 5;
+DELETE FROM Departments WHERE id = 5;
+```
